@@ -1,14 +1,13 @@
 package org.fletcher
 
-import groovy.util.logging.Slf4j
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.transaction.annotation.EnableTransactionManagement
 
-@Slf4j
+@EnableTransactionManagement
 @SpringBootApplication
-class BcuTxnApp {
-
+class Application {
     static void main(String[] args) {
-        SpringApplication.run(BcuTxnApp, args)
+        SpringApplication.run(Application, args)
     }
 }
