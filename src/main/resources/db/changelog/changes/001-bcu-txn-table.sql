@@ -1,3 +1,7 @@
+-- liquibase formatted sql
+
+-- changeset kfletch9:001.01 logicalfilepath:db/changelog/changes/001-bcu-txn-table.sql
+
 CREATE TABLE transactions
 (
     transaction_id VARCHAR(255) PRIMARY KEY,
@@ -9,3 +13,4 @@ CREATE TABLE transactions
     amount         DECIMAL(10, 2),
     balance        DECIMAL(10, 2)
 );
+-- comment: This table will store all transactions from the bank account
