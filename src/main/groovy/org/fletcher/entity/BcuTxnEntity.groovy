@@ -13,6 +13,7 @@ import java.time.LocalDate
 class BcuTxnEntity {
     @Id
     private String transactionId
+    private String accountId
     private LocalDate date
     private String name
     private String description

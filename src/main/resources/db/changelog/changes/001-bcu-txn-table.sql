@@ -5,6 +5,7 @@
 CREATE TABLE transactions
 (
     transaction_id VARCHAR(255) PRIMARY KEY,
+    account_id     VARCHAR(255),
     date           DATE,
     name           VARCHAR(255),
     description    TEXT,
