@@ -27,8 +27,18 @@ class LoadBcuTxns {
                     amount: txn.amount,
                     balance: txn.balance
             )
+            Optional<BcuTxnEntity> e2 = repo.findById(e.transactionId)
 
-            repo.findById(e.transactionId) ?: repo.save(e)
+            e2.ifPresent { t1 ->
+                if (t1.amount != e.amount) {
+                    log.info("Txn Amount Differs", e.transactionId)
+                }
+                if (t1.balance != e.balance) {
+                    log.info("Txn Balance Differs", e.transactionId)
+                }
+            }
+
+            repo.save(e)
 
         }
     }
