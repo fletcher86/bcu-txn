@@ -37,7 +37,7 @@ class LoadBcuTxns {
                     log.info("Txn Balance Differs", e.transactionId)
                 }
             }
-
+            log.info("Saving transaction", e.transactionId)
             repo.save(e)
 
         }
