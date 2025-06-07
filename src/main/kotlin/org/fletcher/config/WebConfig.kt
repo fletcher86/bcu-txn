@@ -7,12 +7,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
 @EnableWebMvc
-class WebConfig implements WebMvcConfigurer {
+open class WebConfig : WebMvcConfigurer {
 
-    @Override
-    void addResourceHandlers(ResourceHandlerRegistry registry) {
+    override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
         registry.addResourceHandler("/swagger-ui/**")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/springdoc-openapi-ui/")
-                .resourceChain(false)
+            .addResourceLocations("classpath:/META-INF/resources/webjars/springdoc-openapi-ui/")
     }
 }

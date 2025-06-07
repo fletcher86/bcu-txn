@@ -1,0 +1,68 @@
+plugins {
+    id("groovy")
+    id("java")
+    id("org.jetbrains.kotlin.jvm") version "2.1.21"
+    id("org.springframework.boot") version "3.4.5"
+    id("io.spring.dependency-management") version "1.1.7"
+}
+
+group = "org.fletcher"
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+    withJavadocJar()
+    // withSourcesJar()
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-jdbc")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-groovy-templates")
+    implementation("org.liquibase:liquibase-core")
+    implementation("org.apache.groovy:groovy-all:4.0.23")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
+    implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.13")
+    implementation("org.slf4j:slf4j-api:2.0.16")
+    implementation("ch.qos.logback:logback-classic:1.5.13")
+    implementation("com.fasterxml.jackson.core:jackson-core:2.15.2")
+    implementation("com.fasterxml.jackson.core:jackson-annotations:2.15.2")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.15.2")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2")
+    implementation("com.mysql:mysql-connector-j:8.2.0")
+    implementation("org.apache.commons:commons-lang3:3.13.0")
+    implementation("org.apache.commons:commons-collections4:4.4")
+    implementation("commons-beanutils:commons-beanutils:1.9.4")
+
+    testImplementation("org.spockframework:spock-core:2.3-groovy-4.0")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("junit:junit:4.13.2")
+}
+
+springBoot {
+    buildInfo()
+}
+
+
+tasks.bootJar {
+    enabled = true
+    // manifest { ... }
+}
+
+tasks.jar {
+    enabled = false
+}
+
+tasks.bootRun {
+    systemProperties.putAll(System.getProperties().map { it.key.toString() to it.value })
+}
+
+tasks.test {
+    useJUnitPlatform()
+}
