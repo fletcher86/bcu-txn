@@ -37,9 +37,12 @@ class LoadBcuTxns {
                     log.info("Txn Balance Differs", e.transactionId)
                 }
             }
-            log.info("Saving transaction", e.transactionId)
-            repo.save(e)
-
+            e2.ifPresentOrElse({
+                log.info("Transaction already exists, skipping save")
+            }, {
+                log.info("Transaction does not exist, saving")
+                repo.save(e)
+            })
         }
     }
 }
