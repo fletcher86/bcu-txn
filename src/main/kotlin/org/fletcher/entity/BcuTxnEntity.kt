@@ -10,7 +10,7 @@ import java.time.LocalDate
 @Table(name = "transactions")
 data class BcuTxnEntity(
     @Id
-    var transactionId: String = "",
+    var transactionId: String? = "",
     var accountId: String? = null,
     var date: LocalDate? = null,
     var name: String? = null,
