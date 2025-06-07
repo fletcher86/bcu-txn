@@ -12,14 +12,14 @@ import java.time.LocalDate
 @Canonical
 class BcuTxnEntity {
     @Id
-    private String transactionId
-    private String accountId
-    private LocalDate date
-    private String name
-    private String description
-    private String checkNumber
-    private String category
-    private BigDecimal amount
-    private BigDecimal balance
+    public String transactionId
+    public String accountId
+    public LocalDate date
+    public String name
+    public String description
+    public String checkNumber
+    public String category
+    public BigDecimal amount
+    public BigDecimal balance
 
 }

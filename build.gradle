@@ -1,7 +1,7 @@
 plugins {
     id 'groovy'
     id 'java'
-    id 'org.springframework.boot' version '3.2.5'
+    id 'org.springframework.boot' version '3.4.5'
 }
 
 apply plugin: 'io.spring.dependency-management'
@@ -33,7 +33,7 @@ dependencies {
 
     implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.13'
     implementation 'org.slf4j:slf4j-api:2.0.16'
-    implementation 'ch.qos.logback:logback-classic:1.4.11'
+    implementation 'ch.qos.logback:logback-classic:1.5.13'
     implementation 'com.fasterxml.jackson.core:jackson-core:2.15.2'
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.15.2'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.15.2'

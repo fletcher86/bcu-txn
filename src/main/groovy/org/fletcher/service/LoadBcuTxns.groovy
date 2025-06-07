@@ -27,20 +27,20 @@ class LoadBcuTxns {
                     amount: txn.amount,
                     balance: txn.balance
             )
-            Optional<BcuTxnEntity> e2 = repo.findById(e.transactionId)
+            Optional<BcuTxnEntity> eFromDb = repo.findById(e.transactionId)
 
-            e2.ifPresent { t1 ->
-                if (t1.amount != e.amount) {
+            eFromDb.ifPresent { t ->
+                if (t.amount != e.amount) {
                     log.info("Txn Amount Differs", e.transactionId)
                 }
-                if (t1.balance != e.balance) {
+                if (t.balance != e.balance) {
                     log.info("Txn Balance Differs", e.transactionId)
                 }
             }
-            e2.ifPresentOrElse({
-                log.info("Transaction already exists, skipping save")
+            eFromDb.ifPresentOrElse({t ->
+                log.info("Transaction already exists, skipping save for txn: [{}]", t.transactionId)
             }, {
-                log.info("Transaction does not exist, saving")
+                log.info("Transaction does not exist, saving txn to database [{}]", txn.transactionId)
                 repo.save(e)
             })
         }

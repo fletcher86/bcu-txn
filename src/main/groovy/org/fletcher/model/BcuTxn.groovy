@@ -14,34 +14,34 @@ import java.time.LocalDate
 class BcuTxn {
 
     @CsvCustomBindByName(column = "Account ID", converter = AccountIDConverter)
-    private String accountId
+    public String accountId
 
     @CsvBindByName(column = "Transaction ID")
-    private String transactionId
+    public String transactionId
 
     @CsvCustomBindByName(column = "Date", converter = LocalDateConverter)
     @CsvDate("MM/dd/yy")
-    private LocalDate date
+    public LocalDate date
 
     @CsvBindByName(column = "Name")
-    private String name
+    public String name
 
     @CsvBindByName(column = "Description")
-    private String description
+    public String description
 
     @CsvBindByName(column = "Check Number")
-    private String checkNumber
+    public String checkNumber
 
     @CsvBindByName(column = "Category")
-    private String category
+    public String category
 
     @CsvBindByName(column = "Tags")
-    private String tags
+    public String tags
 
     @CsvCustomBindByName(column = "Amount", converter = BigDecimalConverter)
-    private BigDecimal amount
+    public BigDecimal amount
 
     @CsvCustomBindByName(column = "Balance", converter = BigDecimalConverter)
-    private BigDecimal balance
+    public BigDecimal balance
 
 }
