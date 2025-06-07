@@ -39,6 +39,7 @@ dependencies {
     implementation("org.apache.commons:commons-lang3:3.13.0")
     implementation("org.apache.commons:commons-collections4:4.4")
     implementation("commons-beanutils:commons-beanutils:1.9.4")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
 
     testImplementation("org.spockframework:spock-core:2.3-groovy-4.0")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
