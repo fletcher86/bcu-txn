@@ -3,18 +3,22 @@ package org.fletcher.model
 import com.opencsv.bean.CsvBindByName
 import com.opencsv.bean.CsvCustomBindByName
 import com.opencsv.bean.CsvDate
+import jakarta.persistence.Id
 import org.fletcher.utils.AccountIDConverter
 import org.fletcher.utils.BigDecimalConverter
 import org.fletcher.utils.LocalDateConverter
+import org.springframework.data.mongodb.core.mapping.Document
 import java.math.BigDecimal
 import java.time.LocalDate
 
+@Document(collection = "txns")
 data class BcuTxn(
     @CsvCustomBindByName(column = "Account ID", converter = AccountIDConverter::class)
     val accountId: String? = null,
 
     @CsvBindByName(column = "Transaction ID")
-    val transactionId: String? = null,
+    @Id
+    val id: String? = null,
 
     @CsvCustomBindByName(column = "Date", converter = LocalDateConverter::class)
     @CsvDate("MM/dd/yy")

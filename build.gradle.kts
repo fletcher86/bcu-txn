@@ -24,6 +24,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     implementation("org.liquibase:liquibase-core")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
     implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.13")
@@ -42,6 +43,7 @@ dependencies {
     testImplementation("org.spockframework:spock-core:2.3-groovy-4.0")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("junit:junit:4.13.2")
+    testImplementation("de.bwaldvogel:mongo-java-server:1.47.0")
 }
 
 springBoot {

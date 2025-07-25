@@ -10,6 +10,12 @@ spring:
   jpa:
     hibernate:
       dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+  data:
+    mongodb:
+      database:
+      uri:
+      username:
+      password:
 
 springdoc:
   api-docs:
