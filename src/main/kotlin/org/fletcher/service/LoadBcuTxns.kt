@@ -28,15 +28,15 @@ class LoadBcuTxns(
                 txn.balance
             )
             val eFromDb = repo.findById(e.transactionId)
-            val meFromDb = mongoRepo.findById(e.transactionId)
+//            val meFromDb = mongoRepo.findById(e.transactionId)
 
-            meFromDb.ifPresentOrElse(
-                { t -> log.info("Mongo Transaction already exists, skipping save for txn: [{}]", t.id) },
-                {
-                    log.info("Mongo Transaction does not exist, saving txn to database [{}]", txn.id)
-                    mongoRepo.save(txn)
-                }
-            )
+//            meFromDb.ifPresentOrElse(
+//                { t -> log.info("Mongo Transaction already exists, skipping save for txn: [{}]", t.id) },
+//                {
+//                    log.info("Mongo Transaction does not exist, saving txn to database [{}]", txn.id)
+//                    mongoRepo.save(txn)
+//                }
+//            )
 
 
             eFromDb.ifPresent { t ->
