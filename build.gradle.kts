@@ -37,7 +37,7 @@ dependencies {
     implementation("org.apache.commons:commons-collections4")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("commons-beanutils:commons-beanutils:1.11.0")
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.6")
     implementation("com.squareup.okhttp3:okhttp:5.4.0")
 
     testImplementation("org.spockframework:spock-core:2.3-groovy-4.0")

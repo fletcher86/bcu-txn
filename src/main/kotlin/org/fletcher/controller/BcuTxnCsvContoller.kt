@@ -23,24 +23,46 @@ class BcuTxnCsvContoller @Autowired constructor(
         value = ["/upload-csv"],
         consumes = [MediaType.MULTIPART_FORM_DATA_VALUE]
     )
-    fun uploadCsv(@RequestParam("file") file: MultipartFile): ResponseEntity<String> {
-        return try {
-            if (file.isEmpty) {
-                throw IllegalArgumentException("File is empty")
+    fun uploadCsv(@RequestParam("files") files: List<MultipartFile>): ResponseEntity<String> {
+        if (files.isEmpty()) {
+            return ResponseEntity.badRequest().body("No files provided")
+        }
+
+        val errors = mutableListOf<String>()
+        var totalLoaded = 0
+
+        for (file in files) {
+            try {
+                if (file.isEmpty) {
+                    errors.add("${file.originalFilename}: file is empty")
+                    continue
+                }
+
+                val reader = InputStreamReader(file.inputStream)
+                val bcuTxns: List<BcuTxn> = CsvToBeanBuilder<BcuTxn>(reader)
+                    .withType(BcuTxn::class.java)
+                    .withIgnoreLeadingWhiteSpace(true)
+                    .build()
+                    .parse()
+
+                loadBcuTxns.loadBcuTxns(bcuTxns)
+                totalLoaded += bcuTxns.size
+                log.info("Loaded ${bcuTxns.size} records from ${file.originalFilename}")
+            } catch (e: Exception) {
+                log.info("Error uploading file ${file.originalFilename}", e)
+                errors.add("${file.originalFilename}: ${e.message}")
             }
+        }
 
-            val reader = InputStreamReader(file.inputStream)
-            val bcuTxns: List<BcuTxn> = CsvToBeanBuilder<BcuTxn>(reader)
-                .withType(BcuTxn::class.java)
-                .withIgnoreLeadingWhiteSpace(true)
-                .build()
-                .parse()
-
-            loadBcuTxns.loadBcuTxns(bcuTxns)
-            ResponseEntity.ok("File uploaded successfully")
-        } catch (e: Exception) {
-            log.info("Error uploading file", e)
-            ResponseEntity.badRequest().body(e.message)
+        return if (errors.isEmpty()) {
+            ResponseEntity.ok("$totalLoaded records loaded successfully from ${files.size} file(s)")
+        } else {
+            val message = buildString {
+                if (totalLoaded > 0) appendLine("$totalLoaded records loaded successfully.")
+                appendLine("Errors:")
+                errors.forEach { appendLine("  - $it") }
+            }
+            ResponseEntity.badRequest().body(message.trim())
         }
     }
 }
