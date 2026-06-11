@@ -12,6 +12,7 @@ spring:
       dialect: org.hibernate.dialect.MySQL5InnoDBDialect
   data:
     mongodb:
+      enabled: false
       database:
       uri:
       username:

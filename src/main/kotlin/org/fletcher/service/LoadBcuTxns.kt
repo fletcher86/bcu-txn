@@ -6,11 +6,12 @@ import org.fletcher.repository.BcuTxnEntityRepository
 import org.fletcher.repository.BcuTxnMongoRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import java.util.Optional
 
 @Service
 class LoadBcuTxns(
     private val repo: BcuTxnEntityRepository,
-    private val mongoRepo: BcuTxnMongoRepository
+    private val mongoRepo: Optional<BcuTxnMongoRepository>
 ) {
     private val log = LoggerFactory.getLogger(LoadBcuTxns::class.java)
 
@@ -28,16 +29,17 @@ class LoadBcuTxns(
                 txn.balance
             )
             val eFromDb = repo.findById(e.transactionId)
-//            val meFromDb = mongoRepo.findById(e.transactionId)
 
-//            meFromDb.ifPresentOrElse(
-//                { t -> log.info("Mongo Transaction already exists, skipping save for txn: [{}]", t.id) },
-//                {
-//                    log.info("Mongo Transaction does not exist, saving txn to database [{}]", txn.id)
-//                    mongoRepo.save(txn)
-//                }
-//            )
-
+            mongoRepo.ifPresent { mongo ->
+                val meFromDb = mongo.findById(e.transactionId)
+                meFromDb.ifPresentOrElse(
+                    { t -> log.info("Mongo Transaction already exists, skipping save for txn: [{}]", t.id) },
+                    {
+                        log.info("Mongo Transaction does not exist, saving txn to database [{}]", txn.id)
+                        mongo.save(txn)
+                    }
+                )
+            }
 
             eFromDb.ifPresent { t ->
                 if (t.amount != e.amount) {
