@@ -13,6 +13,12 @@ class BigDecimalConverter : AbstractBeanField<BigDecimal, String>() {
         }
         // Remove any currency symbols and commas
         val sanitizedValue = value.replace(Regex("[\$,]"), "")
-        return BigDecimal(sanitizedValue)
+        return try {
+            BigDecimal(sanitizedValue)
+        } catch (e: NumberFormatException) {
+            throw CsvDataTypeMismatchException(sanitizedValue, BigDecimal::class.java, "Cannot convert '$sanitizedValue' to BigDecimal").also {
+                it.initCause(e)
+            }
+        }
     }
 }
