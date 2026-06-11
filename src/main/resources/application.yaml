@@ -13,10 +13,10 @@ spring:
   data:
     mongodb:
       enabled: false
-      database:
-      uri:
-      username:
-      password:
+      uri: ${MONGODB_URI:mongodb://localhost:27017}
+      database: ${MONGODB_DATABASE:bcu}
+      username: ${MONGODB_USERNAME:}
+      password: ${MONGODB_PASSWORD:}
 
 springdoc:
   api-docs:
