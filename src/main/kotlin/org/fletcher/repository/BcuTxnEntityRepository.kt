@@ -5,6 +5,4 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface BcuTxnEntityRepository extends JpaRepository<BcuTxnEntity, String> {
-
-}
+interface BcuTxnEntityRepository : JpaRepository<BcuTxnEntity, String>

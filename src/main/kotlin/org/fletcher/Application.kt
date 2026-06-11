@@ -6,8 +6,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement
 
 @EnableTransactionManagement
 @SpringBootApplication
-class Application {
-    static void main(String[] args) {
-        SpringApplication.run(Application, args)
+open class Application {
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>) {
+            SpringApplication.run(Application::class.java, *args)
+        }
     }
 }

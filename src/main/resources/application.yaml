@@ -10,6 +10,13 @@ spring:
   jpa:
     hibernate:
       dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+  data:
+    mongodb:
+      enabled: false
+      uri: ${MONGODB_URI:mongodb://localhost:27017}
+      database: ${MONGODB_DATABASE:bcu}
+      username: ${MONGODB_USERNAME:}
+      password: ${MONGODB_PASSWORD:}
 
 springdoc:
   api-docs:
