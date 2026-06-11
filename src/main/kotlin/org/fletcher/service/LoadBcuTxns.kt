@@ -6,7 +6,7 @@ import org.fletcher.repository.BcuTxnEntityRepository
 import org.fletcher.repository.BcuTxnMongoRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import java.util.Optional
+import java.util.*
 
 @Service
 class LoadBcuTxns(
@@ -16,8 +16,9 @@ class LoadBcuTxns(
     private val log = LoggerFactory.getLogger(LoadBcuTxns::class.java)
 
     fun loadBcuTxns(bcuTxns: List<BcuTxn>) {
-        for (txn in bcuTxns) {
-            val e = BcuTxnEntity(
+        // Map and validate all incoming records up front
+        val incoming: List<BcuTxnEntity> = bcuTxns.map { txn ->
+            BcuTxnEntity(
                 txn.id ?: throw IllegalArgumentException("Transaction ID is missing for record: $txn"),
                 txn.accountId,
                 txn.date,
@@ -28,34 +29,41 @@ class LoadBcuTxns(
                 txn.amount,
                 txn.balance
             )
-            val eFromDb = repo.findById(e.transactionId)
+        }
 
-            mongoRepo.ifPresent { mongo ->
-                val meFromDb = mongo.findById(e.transactionId)
-                meFromDb.ifPresentOrElse(
-                    { t -> log.info("Mongo Transaction already exists, skipping save for txn: [{}]", t.id) },
-                    {
-                        log.info("Mongo Transaction does not exist, saving txn to database [{}]", txn.id)
-                        mongo.save(txn)
-                    }
-                )
-            }
+        val ids = incoming.map { it.transactionId }
 
-            eFromDb.ifPresent { t ->
-                if (t.amount != e.amount) {
-                    log.info("Txn Amount Differs {}", e.transactionId)
-                }
-                if (t.balance != e.balance) {
-                    log.info("Txn Balance Differs {}", e.transactionId)
-                }
+        // Single bulk fetch for MySQL — no N+1
+        val existingById: Map<String, BcuTxnEntity> = repo.findAllById(ids).associateBy { it.transactionId }
+
+        val toSave = mutableListOf<BcuTxnEntity>()
+        for (e in incoming) {
+            val existing = existingById[e.transactionId]
+            if (existing != null) {
+                if (existing.amount != e.amount) log.info("Txn Amount Differs {}", e.transactionId)
+                if (existing.balance != e.balance) log.info("Txn Balance Differs {}", e.transactionId)
+                log.info("Transaction already exists, skipping save for txn: [{}]", e.transactionId)
+            } else {
+                log.info("Transaction does not exist, queuing save for txn: [{}]", e.transactionId)
+                toSave.add(e)
             }
-            eFromDb.ifPresentOrElse(
-                { t -> log.info("Transaction already exists, skipping save for txn: [{}]", t.transactionId) },
-                {
-                    log.info("Transaction does not exist, saving txn to database [{}]", txn.id)
-                    repo.save(e)
-                }
-            )
+        }
+
+        if (toSave.isNotEmpty()) {
+            repo.saveAll(toSave)
+        }
+
+        // Single bulk fetch + save for Mongo — no N+1
+        mongoRepo.ifPresent { mongo ->
+            val existingMongoIds: Set<String> = mongo.findAllById(ids).mapNotNull { it.id }.toSet()
+            val mongoToSave = bcuTxns.filter { it.id != null && it.id !in existingMongoIds }
+            if (mongoToSave.isNotEmpty()) {
+                mongoToSave.forEach { log.info("Mongo Transaction does not exist, saving txn: [{}]", it.id) }
+                mongo.saveAll(mongoToSave)
+            } else {
+                log.info("All {} Mongo transactions already exist, nothing to save", ids.size)
+            }
         }
     }
 }
+
