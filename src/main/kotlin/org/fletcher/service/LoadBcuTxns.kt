@@ -18,7 +18,7 @@ class LoadBcuTxns(
     fun loadBcuTxns(bcuTxns: List<BcuTxn>) {
         for (txn in bcuTxns) {
             val e = BcuTxnEntity(
-                txn.id ?: "",
+                txn.id ?: throw IllegalArgumentException("Transaction ID is missing for record: $txn"),
                 txn.accountId,
                 txn.date,
                 txn.name,
