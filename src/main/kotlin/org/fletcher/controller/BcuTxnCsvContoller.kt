@@ -38,12 +38,13 @@ class BcuTxnCsvContoller @Autowired constructor(
                     continue
                 }
 
-                val reader = InputStreamReader(file.inputStream)
-                val bcuTxns: List<BcuTxn> = CsvToBeanBuilder<BcuTxn>(reader)
-                    .withType(BcuTxn::class.java)
-                    .withIgnoreLeadingWhiteSpace(true)
-                    .build()
-                    .parse()
+                val bcuTxns: List<BcuTxn> = InputStreamReader(file.inputStream).use { reader ->
+                    CsvToBeanBuilder<BcuTxn>(reader)
+                        .withType(BcuTxn::class.java)
+                        .withIgnoreLeadingWhiteSpace(true)
+                        .build()
+                        .parse()
+                }
 
                 loadBcuTxns.loadBcuTxns(bcuTxns)
                 totalLoaded += bcuTxns.size
