@@ -50,8 +50,8 @@ class BcuTxnCsvContoller @Autowired constructor(
                 totalLoaded += bcuTxns.size
                 log.info("Loaded ${bcuTxns.size} records from ${file.originalFilename}")
             } catch (e: Exception) {
-                log.info("Error uploading file ${file.originalFilename}", e)
-                errors.add("${file.originalFilename}: ${e.message}")
+                log.error("Error uploading file ${file.originalFilename}", e)
+                errors.add("${file.originalFilename}: failed to process file")
             }
         }
 
