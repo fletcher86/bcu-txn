@@ -12,7 +12,7 @@ spring:
       dialect: org.hibernate.dialect.MySQL5InnoDBDialect
   data:
     mongodb:
-      enabled: false
+      enabled: true
       uri: ${MONGODB_URI:mongodb://localhost:27017}
       database: ${MONGODB_DATABASE:bcu}
       username: ${MONGODB_USERNAME:}

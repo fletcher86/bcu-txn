@@ -2,9 +2,11 @@ package org.fletcher.controller
 
 import com.opencsv.bean.CsvToBeanBuilder
 import org.fletcher.model.BcuTxn
+import org.fletcher.model.BcuTxnMetricsAccumulator
 import org.fletcher.service.LoadBcuTxns
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -15,7 +17,8 @@ import java.io.InputStreamReader
 
 @RestController
 class BcuTxnCsvContoller @Autowired constructor(
-    private val loadBcuTxns: LoadBcuTxns
+    private val loadBcuTxns: LoadBcuTxns,
+    private val objectMapper: ObjectMapper
 ) {
     private val log = LoggerFactory.getLogger(BcuTxnCsvContoller::class.java)
 
@@ -30,6 +33,8 @@ class BcuTxnCsvContoller @Autowired constructor(
 
         val errors = mutableListOf<String>()
         var totalLoaded = 0
+        val loadedFiles = mutableListOf<String>()
+        val metricsAccumulator = BcuTxnMetricsAccumulator()
 
         for (file in files) {
             try {
@@ -46,14 +51,28 @@ class BcuTxnCsvContoller @Autowired constructor(
                         .parse()
                 }
 
-                loadBcuTxns.loadBcuTxns(bcuTxns)
+                val metrics = loadBcuTxns.loadBcuTxns(bcuTxns)
                 totalLoaded += bcuTxns.size
+                loadedFiles.add(file.originalFilename ?: "UNKNOWN_FILE")
                 log.info("Loaded ${bcuTxns.size} records from ${file.originalFilename}")
+                metricsAccumulator.add(metrics)
             } catch (e: Exception) {
                 log.error("Error uploading file ${file.originalFilename}", e)
                 errors.add("${file.originalFilename}: failed to process file")
             }
         }
+
+        val formattedMetricsJson = objectMapper
+            .writerWithDefaultPrettyPrinter().
+        writeValueAsString(metricsAccumulator.toLogPayload(loadedFiles))
+            .lineSequence()
+            .joinToString("\n") { "|$it" }
+
+        log.warn(
+            "\n|==================== BCU TXN LOAD METRICS ====================\n" +
+                "$formattedMetricsJson\n" +
+                "|==============================================================="
+        )
 
         return if (errors.isEmpty()) {
             ResponseEntity.ok("$totalLoaded records loaded successfully from ${files.size} file(s)")
